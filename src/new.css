@@ -1,0 +1,140 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: black;
+    overflow: hidden;
+    font-family: 'Georgia', serif;
+}
+
+/* ── Slideshow image ─────────────────────────────────────────────────────── */
+#imageButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100vw;
+    max-height: 100vh;
+    object-fit: contain;
+    cursor: pointer;
+
+    /* Start invisible; .visible fades in */
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+#imageButton.visible {
+    opacity: 1;
+}
+
+/* ── Overlay base (hidden state) ─────────────────────────────────────────── */
+.hidden {
+    display: none !important;
+}
+
+/* ── Overlay panel (visible states) ─────────────────────────────────────── */
+/* Base: flex column, invisible, shifted up slightly */
+.overlay-panel {
+    position: absolute;
+    top: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: white;
+
+    /* Fade + lift transition */
+    opacity: 0;
+    transform-origin: center center;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none; /* no clicks until visible */
+}
+
+/* Visible state — added by JS after position class */
+.overlay-panel.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Position variants — each defines its own base + visible transform */
+.overlay-panel.center {
+    left: 50%;
+    transform: translate(-50%, -55%);   /* start slightly high */
+}
+.overlay-panel.center.visible {
+    transform: translate(-50%, -50%);   /* settle to exact center */
+}
+
+.overlay-panel.right {
+    right: 10%;
+    left: auto;
+    transform: translateY(-55%);
+}
+.overlay-panel.right.visible {
+    transform: translateY(-50%);
+}
+
+.overlay-panel.left {
+    left: 10%;
+    right: auto;
+    transform: translateY(-55%);
+}
+.overlay-panel.left.visible {
+    transform: translateY(-50%);
+}
+
+/* ── Overlay image ───────────────────────────────────────────────────────── */
+#overlayImage {
+    width: 150px;
+    margin-bottom: 20px;
+}
+
+/* ── Overlay text ────────────────────────────────────────────────────────── */
+#overlayText {
+    font-size: 2em;
+    margin-bottom: 24px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+}
+
+/* ── Button row ──────────────────────────────────────────────────────────── */
+#buttonRow {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* YES button */
+#yesButton {
+    padding: 12px 32px;
+    font-size: 1.1em;
+    font-family: inherit;
+    border: none;
+    border-radius: 8px;
+    background: white;
+    color: black;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+#yesButton:hover {
+    background: #f0f0f0;
+    transform: scale(1.05);
+}
+
+/* NO button — JS overrides transform & opacity for progressive shrinking */
+#noButton {
+    padding: 12px 32px;
+    font-size: 1.1em;
+    font-family: inherit;
+    border: 2px solid rgba(255,255,255,0.6);
+    border-radius: 8px;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    /* Smooth size changes when noScale changes between panels */
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    transform-origin: center center;
+}
+#noButton:hover {
+    background: rgba(255,255,255,0.1);
+}

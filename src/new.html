@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIMOOOO<3</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="new.css">
+</head>
+
+<body>
+
+<!-- Slideshow Image -->
+<img id="imageButton" src="" alt="Slideshow">
+
+<!-- Ending Overlay -->
+<div id="endOverlay" class="hidden">
+    <img id="overlayImage" src="" alt="">
+    <div id="overlayText"></div>
+    <div id="buttonRow">
+        <button id="yesButton">YES</button>
+        <button id="noButton">NO</button>
+    </div>
+</div>
+
+<script>
+    // ─── SLIDESHOW IMAGES ────────────────────────────────────────────────────
+    var imagesLoc = "../assets/final/";
+    const images = [
+        imagesLoc + "0001.jpg",
+        imagesLoc + "0002.jpg",
+        imagesLoc + "0004.jpg",
+        imagesLoc + "0005.jpg",
+        imagesLoc + "0006.jpg",
+        imagesLoc + "0007.jpg",
+        imagesLoc + "0008.jpg",
+        imagesLoc + "0009.jpg",
+        imagesLoc + "0010.jpg",
+        imagesLoc + "0011.jpg",
+        imagesLoc + "0012.jpg",
+        imagesLoc + "0014.jpg",
+        imagesLoc + "0015.jpg",
+        imagesLoc + "0016.jpg",
+        imagesLoc + "0017.jpg",
+        imagesLoc + "0018.jpg",
+        imagesLoc + "0019.jpg",
+        imagesLoc + "0020.jpg",
+        imagesLoc + "0021.jpg",
+        imagesLoc + "0022.jpg",
+        imagesLoc + "0023.jpg",
+        imagesLoc + "0024.jpg",
+        imagesLoc + "0025.jpg",
+        imagesLoc + "0026.jpg",
+        imagesLoc + "0027.jpg",
+        imagesLoc + "0028.jpg",
+        imagesLoc + "0029.jpg",
+        imagesLoc + "0030.jpg",
+        imagesLoc + "0031.jpg",
+        imagesLoc + "0032.jpg",
+        imagesLoc + "0033.jpg",
+        imagesLoc + "0034.jpg",
+        imagesLoc + "0035.jpg",
+        imagesLoc + "0036.jpg",
+        imagesLoc + "0037.jpg",
+        imagesLoc + "0038.jpg",
+        imagesLoc + "0039.jpg",
+        imagesLoc + "0040.jpg",
+        imagesLoc + "0041.jpg",
+        imagesLoc + "0042.jpg",
+        imagesLoc + "0043.jpg",
+        imagesLoc + "0044.jpg",
+        imagesLoc + "0045.jpg",
+        imagesLoc + "0046.jpg",
+        imagesLoc + "0047.jpg",
+        imagesLoc + "0048.jpg",
+        imagesLoc + "0049.jpg",
+        imagesLoc + "0050.jpg"
+    ];
+
+    // ─── ENDING PANELS ───────────────────────────────────────────────────────
+    // yes / no  → id of next panel, or null to hide that button
+    // noScale   → 0.0–1.0 visual size of NO button (0 = hidden)
+    const panels = {
+        r1: {
+            image: imagesLoc + "end_reze.gif",
+            text: "Willn't youn't ben't myn't Valentinesn't?",
+            position: "center",
+            yes: "r2",
+            no: "r8",
+            yesScale: 1.0,
+            noScale: 1.0
+        },
+        r2: {
+            image: imagesLoc + "end_yelan.gif",
+            text: "NYAHAHA u thought it's the same as those corny ass shit?!!!!!!!!!!!!!!!",
+            position: "center",
+            yes: "r9",
+            no: "r1",
+            yesScale: 1.8,
+            noScale: 0.65
+        },
+                r8: {
+                    image: imagesLoc + "end_please.gif",
+                    text: "PLEASEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE?",
+                    position: "center",
+                    yes: "r9",
+                    no: "r2",
+                    yesScale: 1.4
+                },
+                r9: {
+                    image: imagesLoc + "end_mhmhm.jpg",
+                    text: "If I say youre my nigga, will you say it back?",
+                    position: "center",
+                    yes: "r3",
+                    no: "r3",
+                    yesScale: 2.6,
+                    noScale: 0.8
+                },
+        r3: {
+            image: imagesLoc + "end_fart-for-you.gif",
+            text: "Oki watever, tis website's js meant to bully you. HAVE FUN!!!",
+            position: "center",
+            yes: null,
+            no: null,
+            yesScale: 0.0,
+            noScale: 0.0
+        }
+    };
+
+    // ─── STATE ────────────────────────────────────────────────────────────────
+    let currentIndex  = 0;
+    let activePanelId = null; // null = slideshow mode
+
+    // ─── REFS ─────────────────────────────────────────────────────────────────
+    const imageEl    = document.getElementById("imageButton");
+    const overlay    = document.getElementById("endOverlay");
+    const overlayImg = document.getElementById("overlayImage");
+    const overlayTxt = document.getElementById("overlayText");
+    const yesBtn     = document.getElementById("yesButton");
+    const noBtn      = document.getElementById("noButton");
+
+    // ─── SHOW SLIDE ───────────────────────────────────────────────────────────
+    function showSlide() {
+        activePanelId = null;
+
+        // Wipe overlay completely
+        overlay.className = "hidden";
+        document.body.style.backgroundImage = "none";
+
+        imageEl.style.display = "block";
+
+        // Force reflow so opacity transition re-fires
+        imageEl.classList.remove("visible");
+        void imageEl.offsetWidth;
+        imageEl.src = images[currentIndex];
+        imageEl.classList.add("visible");
+    }
+
+    // ─── SHOW PANEL ───────────────────────────────────────────────────────────
+    function showPanel(panelId) {
+        activePanelId = panelId;
+        const panel   = panels[panelId];
+
+        // Last slide as blurred background
+        document.body.style.backgroundImage   = `url(${images[images.length - 1]})`;
+        document.body.style.backgroundSize    = "contain";
+        document.body.style.backgroundRepeat  = "no-repeat";
+        document.body.style.backgroundPosition= "center";
+        document.body.style.backgroundColor  = "black";
+
+        imageEl.style.display = "none";
+
+        overlayImg.src        = panel.image;
+        overlayTxt.textContent= panel.text;
+
+        // YES button
+        yesBtn.style.display = panel.yes ? "inline-block" : "none";
+        yesBtn.style.display    = "inline-block";
+        yesBtn.style.transform  = `scale(${panel.yesScale})`;
+
+        // NO button — scale + opacity together, hide at 0
+        // if (panel.no && panel.noScale > 0) {
+        noBtn.style.display    = "inline-block";
+        noBtn.style.transform  = `scale(${panel.noScale})`;
+            /*
+        } else {
+            noBtn.style.display = "none";
+        }
+        */
+
+        // Position + fade in
+        overlay.className = "overlay-panel " + panel.position;
+        void overlay.offsetWidth;
+        overlay.classList.add("visible");
+    }
+
+    // ─── BUTTON EVENTS ────────────────────────────────────────────────────────
+    yesBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (activePanelId && panels[activePanelId].yes)
+            showPanel(panels[activePanelId].yes);
+    });
+
+    noBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (activePanelId && panels[activePanelId].no)
+            showPanel(panels[activePanelId].no);
+    });
+
+    // ─── BODY CLICK — SLIDESHOW ONLY ──────────────────────────────────────────
+    document.body.addEventListener("click", () => {
+        if (activePanelId !== null) return; // panels are button-only
+
+        if (currentIndex < images.length - 1) {
+            currentIndex++;
+            showSlide();
+        } else {
+            showPanel("r1"); // enter ending tree
+        }
+    });
+
+    // Right-click = back (slideshow only)
+    document.body.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        if (activePanelId !== null) return;
+        if (currentIndex > 0) { currentIndex--; showSlide(); }
+    });
+
+    // ─── INIT ─────────────────────────────────────────────────────────────────
+    showSlide();
+</script>
+
+</body>
+</html>

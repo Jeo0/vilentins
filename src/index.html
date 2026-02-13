@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happppyy Valentines</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<div id="content">
+</div>
+
+<!-- Fullscreen clickable image -->
+<img id="imageButton" src="" alt="Fullscreen Image">
+
+<script>
+    // ==========================
+    // IMAGE ARRAY (EDIT HERE)
+    // ==========================
+    const images = [
+        "20250912_201159.jpg",
+        "20250912_201237.jpg",
+        "dihh.png"
+    ];
+
+    let currentIndex = 0;
+    const imageElement = document.getElementById("imageButton");
+
+    // Set initial image
+    imageElement.src = images[currentIndex];
+
+    // Click anywhere to change image
+    document.body.addEventListener("click", () => {
+        currentIndex++;
+
+        if (currentIndex >= images.length) {
+            currentIndex = 0; // Loop back to start
+        }
+
+        imageElement.src = images[currentIndex];
+    });
+</script>
+
+</body>
+</html>
