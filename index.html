@@ -23,6 +23,11 @@
     </div>
 </div>
 
+<!-- Background music — plays on first click, loops forever -->
+<audio id="bgMusic" loop preload="auto">
+    <source src="./assets/lovely.mp3" type="audio/mpeg">
+</audio>
+
 <script>
     // ─── SLIDESHOW IMAGES ────────────────────────────────────────────────────
     const imagesLoc = "./assets/final/";
@@ -139,6 +144,17 @@
     const yesBtn     = document.getElementById("yesButton");
     const noBtn      = document.getElementById("noButton");
 
+    // ─── AUDIO ────────────────────────────────────────────────────────────────
+    const bgMusic  = document.getElementById("bgMusic");
+    let  audioStarted = false;
+
+    function startAudio() {
+        if (audioStarted) return;
+        audioStarted = true;
+        bgMusic.volume = 0.6; // 0.0 – 1.0, adjust to taste
+        bgMusic.play().catch(() => {}); // silently ignore if still blocked
+    }
+
     // ─── SHOW SLIDE ───────────────────────────────────────────────────────────
     function showSlide() {
         activePanelId = null;
@@ -197,18 +213,21 @@
     // ─── BUTTON EVENTS ────────────────────────────────────────────────────────
     yesBtn.addEventListener("click", (e) => {
         e.stopPropagation();
+        startAudio();
         if (activePanelId && panels[activePanelId].yes)
             showPanel(panels[activePanelId].yes);
     });
 
     noBtn.addEventListener("click", (e) => {
         e.stopPropagation();
+        startAudio();
         if (activePanelId && panels[activePanelId].no)
             showPanel(panels[activePanelId].no);
     });
 
     // ─── BODY CLICK — SLIDESHOW ONLY ──────────────────────────────────────────
     document.body.addEventListener("click", () => {
+        startAudio();
         if (activePanelId !== null) return; // panels are button-only
 
         if (currentIndex < images.length - 1) {
